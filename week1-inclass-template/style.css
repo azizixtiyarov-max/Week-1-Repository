@@ -1,0 +1,349 @@
+/*
+  FONTS
+
+  Two Google Fonts are imported on the first line of this file:
+    Fraunces               headings (h1 to h6)
+    Atkinson Hyperlegible  body text
+
+  To refer to a Google Font in this stylesheet, write its family name in
+  quotes inside font-family, and always list a fallback family after it:
+
+    h1   { font-family: 'Fraunces', Georgia, serif; }
+    body { font-family: 'Atkinson Hyperlegible', Arial, sans-serif; }
+
+  The name in quotes uses spaces, exactly as the font is named on
+  fonts.google.com. The URL uses plus signs instead (Atkinson+Hyperlegible).
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Atkinson+Hyperlegible:wght@400;700&display=swap');
+
+
+/* COLOR
+   Every color comes from one of these six values.
+   The paper ice-blue is taken from the sky in the banner.
+   The pink and blue are taken from the two banners. */
+
+:root {
+    --paper: #EEF3F8;   /* ice background */
+    --ink:   #18223B;   /* midnight navy, for all main text */
+    --pink:  #C8267C;   /* banner pink, darkened so it reads as text */
+    --blue:  #1F6FB8;   /* blue letters from "past stories" */
+    --mauve: #6B4F82;   /* quiet secondary text and captions */
+    --teal:  #2E9C95;   /* section rules */
+}
+
+
+/* BASE */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--paper);
+    color: var(--ink);
+    font-family: 'Atkinson Hyperlegible', Arial, Helvetica, sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+}
+
+ul {
+    padding: 0;
+}
+
+p {
+    max-width: 40rem;
+}
+
+:focus-visible {
+    outline: 3px solid var(--blue);
+    outline-offset: 4px;
+}
+
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 1rem;
+}
+
+.skip-link:focus {
+    left: 1rem;
+    z-index: 10;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.6rem 1rem;
+}
+
+
+/* The banners and the blur image are blended with multiply, so their white
+   edges disappear into the ice background instead of showing as boxes. */
+.blend {
+    mix-blend-mode: multiply;
+}
+
+
+/* HEADINGS
+   Size follows importance:
+   h1 is the page's central question. h2 is the memory question that
+   the whole page turns around. h3 and h4 are its two follow-ups.
+   h5 names a course of the menu. h6 names one dish within it. */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: clamp(2.6rem, 6.2vw, 4.75rem);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    max-width: 16ch;
+}
+
+h2 {
+    font-size: clamp(1.9rem, 3.8vw, 2.8rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    max-width: 24ch;
+}
+
+h3 {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+
+h4 {
+    font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+}
+
+h5 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: var(--pink);
+}
+
+h6 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.35;
+    margin-bottom: 0.45rem;
+}
+
+
+/* HERO */
+
+.hero {
+    position: relative;
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 3rem) 1.5rem 0;
+}
+
+/* The blur sits behind the title as a soft glow. */
+.hero::before {
+    content: "";
+    position: absolute;
+    left: -5%;
+    right: -5%;
+    top: 30%;
+    height: 60%;
+    background: url('assets/images/blur.png') center / contain no-repeat;
+    mix-blend-mode: multiply;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.banner {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.intro {
+    max-width: 36rem;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    padding-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+/* One load sequence: banner, then title, then intro. */
+.hero > * {
+    animation: rise 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.hero > h1 {
+    animation-delay: 120ms;
+}
+
+.hero > .intro {
+    animation-delay: 240ms;
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+
+/* LAYOUT
+   Each question is a row. The question sits in the left column and the answer
+   in the right. Short questions and menus take the left column; long ones
+   span the full width. */
+
+main {
+    max-width: 62rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+.qa {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    column-gap: clamp(1.5rem, 5vw, 4.5rem);
+    row-gap: 1.25rem;
+    align-items: start;
+    padding-block: clamp(2.5rem, 6vw, 4.5rem);
+    border-top: 2px solid var(--teal);
+}
+
+.qa > h2,
+.qa > figure.wide {
+    grid-column: 1 / -1;
+}
+
+.qa > h3,
+.qa > h4,
+.qa > h5,
+.qa > figure {
+    grid-column: 1;
+}
+
+.qa > .answer {
+    grid-column: 2;
+}
+
+figure {
+    margin: 0;
+}
+
+figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+figcaption {
+    margin-top: 0.9rem;
+    max-width: 34ch;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--mauve);
+}
+
+
+/* MENU
+   The two lists from the template are written as a restaurant menu: each
+   question is a dish, and a dotted leader separates one dish from the next. */
+
+.menu {
+    list-style: none;
+}
+
+.menu li {
+    padding-block: 1.35rem;
+    border-bottom: 1.5px dotted rgba(31, 111, 184, 0.6);
+}
+
+.menu li:first-child {
+    padding-top: 0;
+}
+
+.menu li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+
+/* CLOSING */
+
+.closing {
+    max-width: 36rem;
+    margin: clamp(3rem, 8vw, 6rem) auto 0;
+    padding-left: 1.5rem;
+    border-left: 4px solid var(--pink);
+}
+
+.closing p {
+    max-width: none;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+    font-weight: 400;
+    line-height: 1.25;
+}
+
+footer {
+    max-width: 62rem;
+    margin: clamp(4rem, 10vw, 7rem) auto 0;
+    padding: 1.5rem;
+    border-top: 1.5px solid var(--ink);
+    font-size: 0.95rem;
+    color: var(--mauve);
+}
+
+footer p {
+    max-width: none;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 760px) {
+    h1 {
+        max-width: none;
+    }
+
+    .qa {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .qa > .answer {
+        grid-column: 1;
+    }
+}
+
+
+/* MOTION
+   Respect people who ask their system to reduce motion. */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .hero > * {
+        animation: none;
+    }
+}
